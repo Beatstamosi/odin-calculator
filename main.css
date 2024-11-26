@@ -33,6 +33,7 @@ html, body {
     justify-content: flex-end;
     padding: 0 10px;
     border-radius: 5px;
+    overflow: hidden;
 }
 
 .buttons {
@@ -50,11 +51,11 @@ button {
 
 button:hover {
     cursor: pointer;
-    filter: brightness(1.2);
+    filter: brightness(1.5);
 }
 
-button:focus {
-    filter: brightness(1.2);
+.operator:focus {
+    filter: brightness(1.5);
 }
 
 #zero {
