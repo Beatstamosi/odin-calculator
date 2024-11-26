@@ -12,30 +12,11 @@ Array.from(document.querySelectorAll(".number")).forEach(button => {
 })
 
 // assign eventlistener to operator buttons
-    // assign operator value
-    // solve equation if 
 Array.from(document.querySelectorAll(".operator")).forEach(button => {
     button.addEventListener("click", () => {
-
-        if (number2.length > 0) {
-            operate(number, operator, number2);
-        }
-
-        operator = button.value;
-
-        // directly operate on %
-        if (operator === "%") {
-            operate(number, operator, number2);
-        } else {
-            number2 = [];
-        }
-
-        // assign action to +/- button
- 
+        operatorAction(button);
     });
 })
-
-
 
 // assign eventlistener to equal button
 document.querySelector("#equal").addEventListener("click", () => {
@@ -55,14 +36,33 @@ document.querySelector("#clear").addEventListener("click", () => {
 })
 
 
+function operatorAction (button) {
+    if (number2.length > 0) {
+        result = operate(number, operator, number2);
+        number = result.toString().split("");
+    }
+
+    operator = button.value;
+
+    // directly operate on %
+    if (operator === "%") {
+        operate(number, operator, number2);
+    } else {
+        number2 = [];
+    }
+
+    // assign action to +/- button
+}
 
 function getInputValue(button) {
     let value = button.value;
 
+    // AVOID INPUT AFTER RESULT
+
     if (!operator) {
         number.push(value);
         updateDisplay(number);
-    } else if (operator != null) {
+    } else if (operator) {
         number2.push(value);
         updateDisplay(number2);
     }
@@ -91,7 +91,7 @@ function divide(number, number2) {
     if (number2 === 0) {
         return "ERROR";
     }
-    return number / number2;
+    return Math.round((number / number2) * 100) / 100
 }
 
 
@@ -124,7 +124,9 @@ function operate(number, operator, number2) {
 
     number = result.toString().split("");
     number2 = [];
-    updateDisplay(number);
+    updateDisplay(result.toString().split(""));
+
+    return result;
 };
 
 
