@@ -41,8 +41,18 @@ function handleKeyboardInput (event) {
 
     if (key >= "0" && key <= "9" || key === ".") {
         getInputValue(key);
+
     } else if (key === "+" || key === "-" || key === "*" || key === "/" || key === "%") {
+
+        // indicate which operator has been pressed
+        htmlButton = document.querySelector(`button[value="${key}"]`);
+        htmlButton.focus();
+        setTimeout(() => {
+            htmlButton.blur();
+        }, 700);
+
         operatorAction(key);
+
     } else if (key === "Enter" || key === "=") {
         operate(number, operator, number2);
         equalButtonPushed = true;
@@ -130,7 +140,7 @@ function divide(number, number2) {
     if (number2 === 0) {
         return "ERROR";
     }
-    return Math.round((number / number2) * 10000) / 10000
+    return number / number2;
 }
 
 
@@ -158,6 +168,8 @@ function operate(number, operator, number2) {
         result = percentage(number);
     }
 
+    result = Math.round(result * 100000) / 100000;
+
     processResult(result);
 
     return result;
@@ -165,7 +177,7 @@ function operate(number, operator, number2) {
 
 
 function processResult (result) {
-    if (result) {
+    if (result != undefined) {
         number = result.toString().split("");
         number2 = [];
         updateDisplay(number);
