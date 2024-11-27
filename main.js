@@ -2,44 +2,52 @@ let number = [];
 let operator = null;
 let number2 = [];
 let display = document.querySelector(".display");
+let equalButtonPushed = false;
 
 
-// assign eventlistener to number buttons
+// set up number buttons
 Array.from(document.querySelectorAll(".number")).forEach(button => {
     button.addEventListener("click", () => {
         getInputValue(button);
     });
 })
 
-// assign eventlistener to operator buttons
+// set up operator buttons
 Array.from(document.querySelectorAll(".operator")).forEach(button => {
     button.addEventListener("click", () => {
         operatorAction(button);
     });
 })
 
-// assign eventlistener to equal button
+// set up equal button
 document.querySelector("#equal").addEventListener("click", () => {
     operate(number, operator, number2);
+    equalButtonPushed = true;
+    console.log(number);
 })
 
-
-// assign eventlistener to "." button
+// set up toggle-negative button
+document.querySelector(".toggle-negative").addEventListener("click", toggleNegative);
 
 
 // set up clear button
-document.querySelector("#clear").addEventListener("click", () => {
-    number = [];
-    operator = null;
-    number2 = [];
-    display.textContent = 0;
-})
+document.querySelector("#clear").addEventListener("click", clear);
+
+
+// set up "." button
+
 
 
 function operatorAction (button) {
+
+    // allow to continue math operations after pressing equal
+    if (equalButtonPushed) {
+        equalButtonPushed = false;
+    }
+
     if (number2.length > 0) {
         result = operate(number, operator, number2);
-        number = result.toString().split("");
+        processResult(result);
     }
 
     operator = button.value;
@@ -51,13 +59,29 @@ function operatorAction (button) {
         number2 = [];
     }
 
-    // assign action to +/- button
 }
+
+
+function toggleNegative () {
+    let numberToChange = display.textContent.split("");
+
+    if (number.join() === numberToChange.join()) {
+        number.includes("-") ? number.shift() : number.unshift("-");
+        updateDisplay(number);
+    } else {
+        number2.includes("-") ? number2.shift() : number2.unshift("-");
+        updateDisplay(number2);
+    }
+}
+
 
 function getInputValue(button) {
     let value = button.value;
 
-    // AVOID INPUT AFTER RESULT
+    // avoid input being added to number after user pressed equal
+    if (equalButtonPushed) {
+        clear();
+    }
 
     if (!operator) {
         number.push(value);
@@ -72,7 +96,6 @@ function getInputValue(button) {
 function updateDisplay(arr) {
     display.textContent = arr.join("");
 }
-
 
 
 function add(number, number2) {
@@ -102,7 +125,7 @@ function percentage (number) {
 
 function operate(number, operator, number2) {
     
-    // add . compatibility
+    // add . compatibility via parseFloat
 
     number = parseInt(number.join(""));
     number2 = parseInt(number2.join(""));
@@ -121,14 +144,30 @@ function operate(number, operator, number2) {
         result = percentage(number);
     }
 
-
-    number = result.toString().split("");
-    number2 = [];
-    updateDisplay(result.toString().split(""));
+    processResult(result);
 
     return result;
 };
 
 
+function processResult (result) {
+    if (result) {
+        number = result.toString().split("");
+        number2 = [];
+        updateDisplay(number);
+    } else {
+        updateDisplay(number);
+    }
+    
+}
+
+
+function clear() {
+    number = [];
+    operator = null;
+    number2 = [];
+    display.textContent = 0;
+    equalButtonPushed = false;
+}
 
 
