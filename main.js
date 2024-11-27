@@ -8,7 +8,7 @@ let equalButtonPushed = false;
 // set up number buttons
 Array.from(document.querySelectorAll(".number")).forEach(button => {
     button.addEventListener("click", () => {
-        getInputValue(button);
+        getInputValue(button.value);
     });
 })
 
@@ -32,6 +32,24 @@ document.querySelector(".toggle-negative").addEventListener("click", toggleNegat
 // set up clear button
 document.querySelector("#clear").addEventListener("click", clear);
 
+// set up keyboard input
+document.addEventListener("keydown", handleKeyboardInput);
+
+
+function handleKeyboardInput (event) {
+    let key = event.key;
+
+    if (key >= "0" && key <= "9" || key === ".") {
+        getInputValue(key);
+    } else if (key === "+" || key === "-" || key === "*" || key === "/" || key === "%") {
+        operatorAction(key);
+    } else if (key === "Enter" || key === "=") {
+        operate(number, operator, number2);
+        equalButtonPushed = true;
+    } else if (key === "Backspace" || key === "Delete") {
+        clear();
+    } 
+}
 
 
 function operatorAction (button) {
@@ -46,7 +64,13 @@ function operatorAction (button) {
         processResult(result);
     }
 
-    operator = button.value;
+    // handle input via click or keyboard
+    if (button.value) {
+        operator = button.value;
+    } else {
+        operator = button;
+    }
+    
 
     // directly operate on %
     if (operator === "%") {
@@ -67,8 +91,7 @@ function toggleNegative () {
 }
 
 
-function getInputValue(button) {
-    let value = button.value;
+function getInputValue(value) {
 
     // Avoid input being added to number after user pressed equal
     if (equalButtonPushed) {
@@ -107,7 +130,7 @@ function divide(number, number2) {
     if (number2 === 0) {
         return "ERROR";
     }
-    return Math.round((number / number2) * 100) / 100
+    return Math.round((number / number2) * 10000) / 10000
 }
 
 
