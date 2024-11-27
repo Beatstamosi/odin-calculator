@@ -23,7 +23,6 @@ Array.from(document.querySelectorAll(".operator")).forEach(button => {
 document.querySelector("#equal").addEventListener("click", () => {
     operate(number, operator, number2);
     equalButtonPushed = true;
-    console.log(number);
 })
 
 // set up toggle-negative button
@@ -32,9 +31,6 @@ document.querySelector(".toggle-negative").addEventListener("click", toggleNegat
 
 // set up clear button
 document.querySelector("#clear").addEventListener("click", clear);
-
-
-// set up "." button
 
 
 
@@ -63,33 +59,30 @@ function operatorAction (button) {
 
 
 function toggleNegative () {
-    let numberToChange = display.textContent.split("");
+    let currentNumber = (display.textContent === number.join("")) ? number : number2;
 
-    if (number.join() === numberToChange.join()) {
-        number.includes("-") ? number.shift() : number.unshift("-");
-        updateDisplay(number);
-    } else {
-        number2.includes("-") ? number2.shift() : number2.unshift("-");
-        updateDisplay(number2);
-    }
+    currentNumber.includes("-") ? currentNumber.shift() : currentNumber.unshift("-");
+
+    updateDisplay(currentNumber);
 }
 
 
 function getInputValue(button) {
     let value = button.value;
 
-    // avoid input being added to number after user pressed equal
+    // Avoid input being added to number after user pressed equal
     if (equalButtonPushed) {
         clear();
     }
 
-    if (!operator) {
-        number.push(value);
-        updateDisplay(number);
-    } else if (operator) {
-        number2.push(value);
-        updateDisplay(number2);
-    }
+    let currentNumber = operator ? number2 : number;
+
+    if (value === "." && currentNumber.includes(".")) {
+        return;
+    };
+
+    currentNumber.push(value);
+    updateDisplay(currentNumber);
 }
 
 
@@ -124,11 +117,9 @@ function percentage (number) {
 
 
 function operate(number, operator, number2) {
-    
-    // add . compatibility via parseFloat
 
-    number = parseInt(number.join(""));
-    number2 = parseInt(number2.join(""));
+    number = parseFloat(number.join(""));
+    number2 = parseFloat(number2.join(""));
     let result;
 
 
